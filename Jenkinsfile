@@ -4,7 +4,7 @@ pipeline {
     environment {
         APP_NAME = 'devops-week9-app'
         IMAGE_TAG = '1.0'
-        DOCKER_IMAGE = 'YOUR_DOCKER_USERNAME/devops-week9-project'
+        DOCKER_IMAGE = 'yogesh2214/devops-week9-project'
     }
 
     stages {
