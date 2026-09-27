@@ -4,6 +4,7 @@ pipeline {
     environment {
         APP_NAME = 'devops-week9-app'
         IMAGE_TAG = '1.0'
+        DOCKER_IMAGE = 'YOUR_DOCKER_USERNAME/devops-week9-project'
     }
 
     stages {
@@ -32,7 +33,24 @@ pipeline {
         stage('Package') {
             steps {
                 echo 'Building Docker image...'
-                sh 'docker build -t ${APP_NAME}:${IMAGE_TAG} .'
+                sh 'docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} .'
+            }
+        }
+
+        stage('Push') {
+            steps {
+                echo 'Pushing Docker image to Docker Hub...'
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-credentials',
+                    usernameVariable: 'DOCKER_USERNAME',
+                    passwordVariable: 'DOCKER_PASSWORD'
+                )]) {
+                    sh '''
+                        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+                        docker push ${DOCKER_IMAGE}:${IMAGE_TAG}
+                        docker logout
+                    '''
+                }
             }
         }
     }
